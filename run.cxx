@@ -18,6 +18,8 @@
 //local headers
 #include "DetectorConstruction.h"
 #include "ActionInitialization.h"
+//Caryn added
+#include "PhysicsList.h"
 
 using namespace std;
 
@@ -54,10 +56,14 @@ int main(int argc, char* argv[]) {
   runManager->SetUserInitialization(new DetectorConstruction);
 
   //physics
-  FTFP_BERT *physicsList = new FTFP_BERT;
+  // FTFP_BERT *physicsList = new FTFP_BERT;
   //G4OpticalPhysics *opt = new G4OpticalPhysics();
   //physicsList->RegisterPhysics(opt); // uncomment to turn optics on
-  runManager->SetUserInitialization(physicsList);
+  //  runManager->SetUserInitialization(physicsList);
+
+  //Caryn added
+   runManager->SetUserInitialization(new PhysicsList);
+
 
   //action
   runManager->SetUserInitialization(new ActionInitialization);
