@@ -105,6 +105,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	string cc1,cc2;
 
+	//Caryn add for names of detectors
+	string detname;
+
 	G4double xpos,ypos,zpos,length,r1,r2,dout,angle,bfield,gradient;
 
 	int number = 0;
@@ -148,18 +151,22 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
                 }
 		if(number==14){
 			AddDetector(new BeamMagnetQuadrupole(cc2,xpos*meter,ypos*meter,zpos*meter,length*meter,r1*meter,r2*meter,dout*meter,angle,gradient*tesla/meter, 0.5,0.5,0.5,top_l));} //add Quadrupole
-
-
-
-
+		//Caryn add detectors before and after dipoles
+		if(cc1=="QF"){
+		  if(xpos<1){
+		  detname = "Det_"+cc2+"_after";
+	       	 AddDetector(new electronDet(detname,xpos*meter,ypos*meter,zpos*meter+0.35*meter, 0.003,top_l)); //add Quadrupole
+		 detname = "Det_"+cc2+"_before";
+	         AddDetector(new electronDet(detname,xpos*meter,ypos*meter,zpos*meter-0.35*meter, 0.003,top_l)); //add Quadrupole
+		  }
+		}
 	}
 
 //photon det
 		AddDetector(new calBox("Gdet_ecal",515.59067,0,-60870.712,-0.0103371112 ,250*mm,400*mm,top_l)); //add Ecal detector 32m from laser IP primary
 // to study the recoil electron
-		AddDetector(new electronDet("Edet_QD9",178.78630,0,-83845.821,0.0036928331,top_l));  //recoil electron detector
-		
-
+	       AddDetector(new electronDet("Edet_QD9",178.78630,0,-83845.821,0.0036928331,top_l));  //recoil electron detector
+	
 
 
 
