@@ -11,18 +11,18 @@
 
 
 #Caryn added
- /process/activate SynchrotronRadiation
+# /process/activate SynchrotronRadiation
 #
 # inactivate other processes to make SynchrotronRadiation more visible
-#/process/inactivate msc
-#/process/inactivate eIoni
-#/process/inactivate eBrem
-#/process/inactivate annihil
-#/process/inactivate phot
-#/process/inactivate compt
-#/process/inactivate conv
-#/process/inactivate Rayl
+/process/inactivate msc
+/process/inactivate eIoni
+/process/inactivate eBrem
+/process/inactivate annihil
+/process/inactivate phot
+/process/inactivate compt
+/process/inactivate conv
+/process/inactivate Rayl
 
 
-/run/beamOn 10
+/run/beamOn 180
 
