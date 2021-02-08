@@ -38,7 +38,9 @@
 /vis/viewer/zoom 1.6
 #
 # Specify style (surface or wireframe):
+/vis/viewer/set/style surface
 #/vis/viewer/set/style wireframe
+
 #
 # Draw coordinate axes:
 #/vis/scene/add/axes 0 0 0 1 m
