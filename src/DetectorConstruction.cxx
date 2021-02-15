@@ -30,8 +30,10 @@
 #include "BeamMagnetQuadrupole.h"
 #include "BeamMagnetQuadrupole_cone.h"
 #include "electronDet.h"
+//#include "planeDet.h"
 #include "photonDet.h"
 #include "calBox.h"
+#include "genericDet.h"
 
 using namespace std;
 
@@ -153,19 +155,35 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 			AddDetector(new BeamMagnetQuadrupole(cc2,xpos*meter,ypos*meter,zpos*meter,length*meter,r1*meter,r2*meter,dout*meter,angle,gradient*tesla/meter, 0.5,0.5,0.5,top_l));} //add Quadrupole
 		//Caryn add detectors before and after dipoles
 		if(cc1=="QF"){
+		  //		  if(xpos<1&&zpos>-83.5){
 		  if(xpos<1){
-		  detname = "Det_"+cc2+"_after";
-	       	 AddDetector(new electronDet(detname,xpos*meter,ypos*meter,zpos*meter+0.35*meter, 0.003,top_l)); //add Quadrupole
-		 detname = "Det_"+cc2+"_before";
-	         AddDetector(new electronDet(detname,xpos*meter,ypos*meter,zpos*meter-0.35*meter, 0.003,top_l)); //add Quadrupole
+		   detname = "Det_"+cc2+"_after";
+		   AddDetector(new genericDet(detname,xpos*meter,ypos*meter,zpos*meter+0.35*meter,0,2500,1,top_l)); //add Quadrupole
+		   detname = "Det_"+cc2+"_before";
+		   AddDetector(new genericDet(detname,xpos*meter,ypos*meter,zpos*meter-0.35*meter,0,2500,1,top_l)); //add Quadrupole
+
 		  }
 		}
+		if(cc1=="DB"){
+		  if(xpos<1){
+		   detname = "Det_"+cc2+"_after";
+		   AddDetector(new genericDet(detname,xpos*meter,ypos*meter,zpos*meter+1.5*meter,0,2500,1,top_l)); //add Quadrupole
+		   detname = "Det_"+cc2+"_before";
+		   AddDetector(new genericDet(detname,xpos*meter,ypos*meter,zpos*meter-1.5*meter,0,2500,1,top_l)); //add Quadrupole
+		  }
+		}
+
 	}
 
 //photon det
 		AddDetector(new calBox("Gdet_ecal",515.59067,0,-60870.712,-0.0103371112 ,250*mm,400*mm,top_l)); //add Ecal detector 32m from laser IP primary
 // to study the recoil electron
-	       AddDetector(new electronDet("Edet_QD9",178.78630,0,-83845.821,0.0036928331,top_l));  //recoil electron detector
+//		AddDetector(new electronDet("Edet_QD9",178.78630,0,-83845.821,0.0036928331,top_l));  //recoil electron detector
+
+		//       AddDetector(new planeDet("planeDet",178.78630,0,-84845.821,0.0036928331,top_l));  //recoil electron detector
+		//      AddDetector(new genericDet("gDetTst",515.59067,0,-60870-410.712,-0.0103371112 ,250,1, top_l));  //generic detector
+
+
 	
 
 
