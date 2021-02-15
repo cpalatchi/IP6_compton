@@ -79,6 +79,7 @@ set(MACRO
   init_vis.mac
   vis.mac
   run.mac
+  runBeam.mac
 )
 
 foreach(_mac ${MACRO})
