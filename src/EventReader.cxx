@@ -27,11 +27,12 @@ using namespace std;
 
 //_____________________________________________________________________________
 EventReader::EventReader() : G4VUserPrimaryGeneratorAction(), fIev(0), 
-			     fUseBeam(0), fBeamE(5), fBeamVX(0), fBeamVY(0), fBeamVZ(0),
+			     fUseBeam(0), fBeamE(5), fBeamVX(0), fBeamVY(0), fBeamVZ(-9700),
 			     fBeamPx(0),fBeamPy(0),fBeamPz(1){
 
   //default input name
   fInputName = "../events.dat";
+
 
   //command for name of input file
   fMsg = new G4GenericMessenger(this, "/EPol/input/");
@@ -58,22 +59,60 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
     G4cout << "EventReader::GeneratePrimaries, event number: " << fIev << G4endl;
   }
 
+  // if(fUseBeam){
+  //   G4ParticleGun* fParticleGun = new G4ParticleGun(1);
+  //   //    auto fParticleGun = new G4ParticleGun(1);
+  //   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+  //   G4ParticleDefinition* particle = particleTable->FindParticle("e-");
+  //   fParticleGun->SetParticleDefinition(particle);
+  //   fParticleGun->SetParticlePosition(G4ThreeVector(fBeamVX,fBeamVY,fBeamVZ));
+  //   G4ThreeVector beamDir(fBeamPx,fBeamPy,fBeamPz);
+  //   if(beamDir.mag() > 1){
+  //     G4cerr<<"Error: given momentum direction is not length of 1: "<<beamDir.mag()<<G4endl;
+  //     G4cerr<<"Error: not going to do anything"<<G4endl;
+  //     return;
+  //   }
+  //   fParticleGun->SetParticleMomentumDirection(beamDir);
+  //   fParticleGun->SetParticleEnergy(fBeamE);
+  //   // evt->AddPrimaryVertex(vtx);
+  //   //evt->AddParticleGun(fParticleGun);
+  //   // evt->registerSubsystem(gun);
+  //   //evt->G4ParticleGun::GeneratePrimaryVertex(fParticleGun);
+  //   return;
+  // }
+
+    //11 is electron, Caryn
+    //22 is photon, Caryn
   if(fUseBeam){
-    auto fParticleGun = new G4ParticleGun(1);
-    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-    G4ParticleDefinition* particle = particleTable->FindParticle("e-");
-    fParticleGun->SetParticleDefinition(particle);
-    fParticleGun->SetParticlePosition(G4ThreeVector(fBeamVX,fBeamVY,fBeamVZ));
-    G4ThreeVector beamDir(fBeamPx,fBeamPy,fBeamPz);
-    if(beamDir.mag() > 1){
-      G4cerr<<"Error: given momentum direction is not length of 1: "<<beamDir.mag()<<G4endl;
-      G4cerr<<"Error: not going to do anything"<<G4endl;
-      return;
-    }
-    fParticleGun->SetParticleMomentumDirection(beamDir);
-    fParticleGun->SetParticleEnergy(fBeamE);
-    return;
+    //center of first dipole
+    //  string line = "EVENT:  1 2 15.1178  0  -9513.0"; //cm  units
+    //  string line2 = "TRACK:  11 0.086760417   0.0   5.0";//GeV units 5GeV*0.01735=0.086760417
+
+    //front of first dipole
+    // string line = "EVENT:  1 2 12.581532  0  -9659.2029"; //cm  units
+    //string line2 = "TRACK:  11 0.086760417   0.0   5.0";//GeV units 5GeV*0.01735=0.086760417
+
+  //center of first quad
+     string line = "EVENT:  1 2 10.6325  0  -9739.1559"; //cm  units
+     string line2 = "TRACK:  11 0.12183528   0.0   4.9985154";//GeV units 5GeV*-0.0243670556=0.12183528
+
+
+  G4double vx, vy, vz; // cm
+  int ntrk=1; // number of particles
+  ReadVertex(line, vx, vy, vz, ntrk); // read from the vertex line
+  G4PrimaryVertex *vtx = new G4PrimaryVertex(vx*cm, vy*cm, vz*cm, 0);
+  vector<ParticleReader> tracks;
+  tracks.push_back( ParticleReader(line2) );
+  map<G4int, ParticleReader*> tmap;
+  for(vector<ParticleReader>::iterator i = tracks.begin(); i != tracks.end(); i++) {
+    if( (*i).GetPdg() == 11 ) tmap.insert( make_pair(11, &(*i)) );
+   }
+  tmap[11]->GenerateToVertex(vtx); 
+  evt->AddPrimaryVertex(vtx);
+  return;
   }
+
+ if(!fUseBeam){
 
   //open COMRAD input
   if(!fIn.is_open()) OpenInput();
@@ -88,7 +127,7 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
     }
 
     getline(fIn, line);
-    //G4cout << line << G4endl;
+    G4cout << line << G4endl;
   }
 
   //get vertex coordinates, cm, and number of particles
@@ -97,7 +136,7 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
   int ntrk; // number of particles
   ReadVertex(line, vx, vy, vz, ntrk); // read from the vertex line
 
-  //G4cout << line << G4endl;
+  G4cout << line << G4endl;
   //G4cout << "EventReader::GeneratePrimaries " << vx << " " << vy << " " << vz << " " << ntrk << G4endl;
 
   //make the primary vertex
@@ -112,6 +151,7 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
 
     getline(fIn, line);
     tracks.push_back( ParticleReader(line) );
+    G4cout << itrk<<" "<<line << G4endl;
   }//particle loop
 
   //put tracks to map according to pdg
@@ -137,6 +177,8 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
 
   //put vertex to the event
   evt->AddPrimaryVertex(vtx);
+
+ }
 
 }//GeneratePrimaries
 
