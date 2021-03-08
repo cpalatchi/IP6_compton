@@ -190,7 +190,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	
 		//adding chamber
 		G4double boxthickness;
-		boxthickness=5*(1/8.)*25.4*meter/1000;//5/8" in mm
+		boxthickness=1*(1/8.)*25.4*meter/1000;//5/8" in mm
 		AddDetector(new chamberBox("chamber",278,0,-83845.8,0.0036928331 ,640*mm,1*meter,boxthickness, top_l)); //add Ecal detector 32m from laser IP primary
 		//		AddDetector(new calBox("Gdet_ecal",515.59067,0,-60870.712,-0.0103371112 ,250*mm,400*mm,top_l)); //add Ecal detector 32m from laser IP primary
 		//		AddDetector(new BeamMagnetDipole("edetchamber",278,-0.4,-83845.8,1*meter,0.05*meter,0.05*meter,1*meter,0,0*tesla, top_l));//add Dipole
