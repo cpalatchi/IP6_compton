@@ -33,6 +33,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
     void ConstructSDandField();
 
+    MCEvent *getMCEvent(){return fMC;}
+
   private:
 
     void AddDetector(Detector *det); // add detector to all detectors
