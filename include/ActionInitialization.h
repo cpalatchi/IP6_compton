@@ -5,15 +5,21 @@
 //standard action initialization
 
 #include "G4VUserActionInitialization.hh"
+#include "DetectorConstruction.h"
 
 class ActionInitialization : public G4VUserActionInitialization {
 
   public:
 
-    ActionInitialization() : G4VUserActionInitialization() {}
+//    ActionInitialization() : G4VUserActionInitialization() {}
+   ActionInitialization(DetectorConstruction *dc) : G4VUserActionInitialization()
+  {fDetConst = dc;}
     virtual ~ActionInitialization() {}
 
     virtual void Build() const;
+
+ private:
+  DetectorConstruction *fDetConst;
 
 };
 
