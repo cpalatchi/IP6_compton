@@ -26,6 +26,7 @@
 #include "DetectorConstruction.h"
 #include "RootOut.h"
 #include "MCEvent.h"
+#include "EventReader.h"
 #include "BeamMagnetDipole.h"
 #include "BeamMagnetQuadrupole.h"
 #include "BeamMagnetQuadrupole_cone.h"
@@ -34,6 +35,8 @@
 #include "photonDet.h"
 #include "calBox.h"
 #include "genericDet.h"
+#include "chamberBox.h"
+#include "BeamPipe.h"
 
 using namespace std;
 
@@ -185,6 +188,60 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 
 	
+		//adding chamber
+		G4double boxthickness;
+		boxthickness=5*(1/8.)*25.4*meter/1000;//5/8" in mm
+		AddDetector(new chamberBox("chamber",278,0,-83845.8,0.0036928331 ,640*mm,1*meter,boxthickness, top_l)); //add Ecal detector 32m from laser IP primary
+		//		AddDetector(new calBox("Gdet_ecal",515.59067,0,-60870.712,-0.0103371112 ,250*mm,400*mm,top_l)); //add Ecal detector 32m from laser IP primary
+		//		AddDetector(new BeamMagnetDipole("edetchamber",278,-0.4,-83845.8,1*meter,0.05*meter,0.05*meter,1*meter,0,0*tesla, top_l));//add Dipole
+
+		//adding beampipe
+		G4double wallthickness;
+		G4double x1,x2,z1,z2,outerD;
+		G4double cx,cy,cz,l,r1pipe,r2pipe,theta;
+		wallthickness=5*(1/8.)*25.4*meter/1000;//5/8" in mm
+		x1=0.1998355*meter;
+		x2=0.181002*meter;
+		z1=-88.34579*meter;
+		z2=-83.245825*meter;
+		outerD=2*0.06*meter;
+		cx=(x1+x2)/2;
+		cy=0;
+		cz=(z1+z2)/2;
+		l=(z2-z1);
+		theta=-(x2-x1)/(z2-z1);
+		r1pipe=0.06*meter-wallthickness;
+		r2pipe=r1pipe;
+		//		AddDetector(new BeamMagnetDipole("beampipe",cx,cy,cz,l,r1pipe,r2pipe,outerD,theta,0*tesla, top_l));//add Dipole
+		wallthickness=5*(1/8.)*25.4*meter/1000;//changed to 5/8" from 1/8" in mm
+		x1=0.1998355*meter;
+		x2=0.181002*meter;
+		z1=-88.34579*meter;
+		z2=-83.8458*meter-1*meter;
+		outerD=2*3*0.06*meter;
+		cx=(x1+x2)/2;
+		cy=0;
+		cz=(z1+z2)/2;
+		l=(z2-z1);
+		theta=-(x2-x1)/(z2-z1);
+		r1pipe=3*0.06*meter-wallthickness;
+		r2pipe=r1pipe;
+		AddDetector(new BeamPipe("beampipe",cx,cy,cz,l,r1pipe,r2pipe,outerD,theta,0*tesla, top_l));//add Dipole
+		//add beam pipe inside 2nd dipole and quads 11,10
+		wallthickness=5*(1/8.)*25.4*meter/1000;//changed to 5/8" from 1/8" in mm
+		x1=0.197934*meter;//q11
+		x2=0.1998355*meter;//q10
+		z1=-92.8690025*meter;//q11
+		z2=-88.34579*meter;//q10
+		outerD=2*0.06*meter;
+		cx=(x1+x2)/2;
+		cy=0;
+		cz=(z1+z2)/2;
+		l=(z2-z1);
+		theta=-(x2-x1)/(z2-z1);
+		r1pipe=0.06*meter-wallthickness;
+		r2pipe=r1pipe;
+		//		AddDetector(new BeamPipe("beampipe0",cx,cy,cz,l,r1pipe,r2pipe,outerD,theta,0*tesla, top_l));//add pipe
 
 
 
