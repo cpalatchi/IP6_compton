@@ -19,6 +19,7 @@
 //local headers
 #include "EventReader.h"
 #include "ParticleReader.h"
+#include "MCEvent.h"
 #include "G4ParticleGun.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
@@ -26,7 +27,8 @@
 using namespace std;
 
 //_____________________________________________________________________________
-EventReader::EventReader() : G4VUserPrimaryGeneratorAction(), fIev(0), 
+  //EventReader::EventReader() : G4VUserPrimaryGeneratorAction(), fIev(0), 
+EventReader::EventReader(DetectorConstruction *dc) : G4VUserPrimaryGeneratorAction(), fIev(0),
 			     fUseBeam(0), fBeamE(5), fBeamVX(0), fBeamVY(0), fBeamVZ(-9700),
 			     fBeamPx(0),fBeamPy(0),fBeamPz(1){
 
@@ -47,6 +49,8 @@ EventReader::EventReader() : G4VUserPrimaryGeneratorAction(), fIev(0),
   fMsg->DeclareProperty("beamPx", fBeamPx);
   fMsg->DeclareProperty("beamPy", fBeamPy);
   fMsg->DeclareProperty("beamPz", fBeamPz);
+
+  fDetConst = dc;
 
 }//EventReader
 
@@ -92,19 +96,27 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
     // string line = "EVENT:  1 2 12.581532  0  -9659.2029"; //cm  units
     //string line2 = "TRACK:  11 0.086760417   0.0   5.0";//GeV units 5GeV*0.01735=0.086760417
 
-  //center of first quad
-     string line = "EVENT:  1 2 10.6325  0  -9739.1559"; //cm  units
+  //center of first quad 5GeV
+         string line = "EVENT:  1 2 10.6325  0  -9739.1559"; //cm  units
      string line2 = "TRACK:  11 0.12183528   0.0   4.9985154";//GeV units 5GeV*-0.0243670556=0.12183528
+
+  //center of first quad 18GeV
+    //     string line = "EVENT:  1 2 10.6325  0  -9739.1559"; //cm  units
+    //  string line2 = "TRACK:  11 0.4386070   0.0  17.994655";//GeV units 18GeV*-0.0243670556=-0.43860700
+
+
 
 
   G4double vx, vy, vz; // cm
+  G4double uXsec(0),pXsec(0);
   int ntrk=1; // number of particles
-  ReadVertex(line, vx, vy, vz, ntrk); // read from the vertex line
+  //  ReadVertex(line, vx, vy, vz, ntrk); // read from the vertex line
+  ReadVertex(line, vx, vy, vz, uXsec, pXsec, ntrk); // read from the vertex line
   G4PrimaryVertex *vtx = new G4PrimaryVertex(vx*cm, vy*cm, vz*cm, 0);
-  vector<ParticleReader> tracks;
+  std::vector<ParticleReader> tracks;
   tracks.push_back( ParticleReader(line2) );
   map<G4int, ParticleReader*> tmap;
-  for(vector<ParticleReader>::iterator i = tracks.begin(); i != tracks.end(); i++) {
+  for(std::vector<ParticleReader>::iterator i = tracks.begin(); i != tracks.end(); i++) {
     if( (*i).GetPdg() == 11 ) tmap.insert( make_pair(11, &(*i)) );
    }
   tmap[11]->GenerateToVertex(vtx); 
@@ -133,8 +145,13 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
   //get vertex coordinates, cm, and number of particles
   //getline(fIn, line);
   G4double vx, vy, vz; // cm
+  G4double uXsec(0),pXsec(0);
   int ntrk; // number of particles
-  ReadVertex(line, vx, vy, vz, ntrk); // read from the vertex line
+ReadVertex(line, vx, vy, vz, uXsec, pXsec, ntrk); // read from the vertex line
+  //  ReadVertex(line, vx, vy, vz, ntrk); // read from the vertex line
+
+fDetConst->getMCEvent()->SetPolXsec(pXsec);
+  fDetConst->getMCEvent()->SetUnpolXsec(uXsec);
 
   G4cout << line << G4endl;
   //G4cout << "EventReader::GeneratePrimaries " << vx << " " << vy << " " << vz << " " << ntrk << G4endl;
@@ -144,7 +161,8 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
   //  G4cout << "EventReader::GeneratePrimaries " << vx << " " << vy << " " << vz << " " << ntrk << G4endl;
 
   //tracks in event
-  vector<ParticleReader> tracks;
+  //  vector<ParticleReader> tracks;
+ std::vector<ParticleReader> tracks;
 
   //particle loop
   for(int itrk=0; itrk<ntrk; itrk++) {
@@ -156,7 +174,7 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
 
   //put tracks to map according to pdg
   map<G4int, ParticleReader*> tmap;
-  for(vector<ParticleReader>::iterator i = tracks.begin(); i != tracks.end(); i++) {
+  for(std::vector<ParticleReader>::iterator i = tracks.begin(); i != tracks.end(); i++) {
 
     //put the electron
     if( (*i).GetPdg() == 11 ) tmap.insert( make_pair(11, &(*i)) );
@@ -183,8 +201,9 @@ void EventReader::GeneratePrimaries(G4Event *evt) {
 }//GeneratePrimaries
 
 //_____________________________________________________________________________
-void EventReader::ReadVertex(const std::string& line, G4double& vx, G4double& vy, G4double& vz, int& ntrk) {
-
+//void EventReader::ReadVertex(const std::string& line, G4double& vx, G4double& vy, G4double& vz, int& ntrk) {
+void EventReader::ReadVertex(const std::string& line, G4double& vx, G4double& vy, G4double& vz, 
+			     G4double &uXsec, G4double &pXsec, int& ntrk) {
   //vertex coordinates and number of tracks
   stringstream ss(line);
   string cc1;
@@ -195,7 +214,8 @@ void EventReader::ReadVertex(const std::string& line, G4double& vx, G4double& vy
   ss>>vx;
   ss>>vy;
   ss>>vz;
-
+  ss>>uXsec;
+  ss>>pXsec;
 }//ReadVertex
 
 //_____________________________________________________________________________
