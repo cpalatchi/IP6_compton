@@ -10,7 +10,7 @@
 class BeamPipe : public Detector, public G4VSensitiveDetector {
 
   public:
-    BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4double length, G4double r1, G4double r2, G4double dout, G4double angle, G4double bfield, G4LogicalVolume*);
+    BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4double length, G4double r1, G4double r2,  G4double angle,  G4LogicalVolume*);
     virtual ~BeamPipe() {}
 
     //Detector
