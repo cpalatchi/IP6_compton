@@ -29,7 +29,7 @@
 //G4ChordFinder*  fChordFinder ;
 
 //_____________________________________________________________________________
-BeamPipe::BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4double length, G4double r1, G4double r2, G4double dout, G4double angle, G4double bfield, G4LogicalVolume *top):
+BeamPipe::BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4double length, G4double r1, G4double r2,  G4double angle, G4LogicalVolume *top):
 	Detector(), G4VSensitiveDetector(nam), fNam(nam) {
 
 		//conical inner core
@@ -51,9 +51,9 @@ BeamPipe::BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4dou
 
 		//magnetic field inside the inner core G4UniformMagField *field =
 		//G4ElectroMagneticField *field  = new G4ElectroMagneticField(0, -0.272916*tesla, 0,0 ,0 ,0);
-		G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, bfield, 0));
+		//		G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, bfield, 0));
 		//(G4ThreeVector(0, -0.272916*tesla, 0));
-		G4FieldManager *fman =  new G4FieldManager();//G4TransportationManager::GetTransportationManager()->GetFieldManager();//new G4FieldManager();
+		//		G4FieldManager *fman =  new G4FieldManager();//G4TransportationManager::GetTransportationManager()->GetFieldManager();//new G4FieldManager();
 
 
 //		fEquation = new G4EqMagElectricField(field);
@@ -63,18 +63,20 @@ BeamPipe::BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4dou
 
 
 
-		fman->SetDetectorField(field);
-		fman->CreateChordFinder(field);
+//		fman->SetDetectorField(field);
+//		fman->CreateChordFinder(field);
 		//fman->SetChordFinder(fChordFinder);
 		//fman->GetChordFinder()->SetDeltaChord(1e-7*meter);
 
-		vol_inner->SetFieldManager(fman, true);
+		//		vol_inner->SetFieldManager(fman, true);
 
 		//put the inner core to the top volume
 		new G4PVPlacement(yRot, G4ThreeVector(xpos,ypos, zpos), vol_inner, nam_inner, top, false, 0);
 
 		//cylindrical outer shape
-		G4Tubs *shape_outer = new G4Tubs(fNam+"_outer", 0., dout*0.5, length/2-1e-4*meter, 0., 360.*deg);
+		//		G4Tubs *shape_outer = new G4Tubs(fNam+"_outer", 0., dout*0.5, length/2-1e-4*meter, 0., 360.*deg);
+		//		G4Cons *shape_inner = new G4Cons(nam_inner, 0, r2, 0, r1, length/2, 0, 360*deg);
+		G4Tubs *shape_outer = new G4Tubs(fNam+"_outer", r1, r2, length/2, 0., 360.*deg);
 		G4Material *mat_outer = G4NistManager::Instance()->FindOrBuildMaterial("G4_STAINLESS-STEEL");
 		//		G4LogicalVolume *vol_outer = new G4LogicalVolume(shape_outer, mat_outer, fNam+"_outer");
 
@@ -83,9 +85,11 @@ BeamPipe::BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4dou
 
 
 		//magnet vessel around the inner magnetic core
-		G4SubtractionSolid *shape_vessel = new G4SubtractionSolid(fNam, shape_outer, shape_inner);
+		//	G4SubtractionSolid *shape_vessel = new G4SubtractionSolid(fNam, shape_outer, shape_inner);
 
-		G4LogicalVolume *vol_vessel = new G4LogicalVolume(shape_vessel, mat_outer, fNam);
+		//		G4LogicalVolume *vol_vessel = new G4LogicalVolume(shape_vessel, mat_outer, fNam);
+
+		G4LogicalVolume *vol_vessel = new G4LogicalVolume(shape_outer, mat_outer, fNam);
 
 		//vessel visibility
 		G4VisAttributes *vis_vessel = new G4VisAttributes();
