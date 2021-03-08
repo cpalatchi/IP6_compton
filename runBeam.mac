@@ -4,9 +4,9 @@
 #detectors and components
 /EPol/input/useBeam 1
 /EPol/input/beamEnergy 5
-/EPol/input/beamVx 0
-/EPol/input/beamVy 0
-/EPol/input/beamVz 0
+/EPol/input/beamVx 11.4809
+/EPol/input/beamVy -10
+/EPol/input/beamVz -1028.90025
 /EPol/input/beamPx 0
 /EPol/input/beamPy 0
 /EPol/input/beamPz 1
@@ -15,5 +15,5 @@
 
 # Initialize kernel
 /run/initialize
-/run/beamOn 10
+/run/beamOn 100000
 
