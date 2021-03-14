@@ -122,7 +122,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 		wallthickness=(1/8.)*25.4*meter/1000;//changed to 5/8" from 1/8" in mm
 		x1=0.1998355*meter;
 		x2=0.181002*meter;
-		z1=-88.34579*meter+0.6*meter/2;
+		z1=-88.34579*meter+0.6*meter/2+5;
 		z2=-83.8458*meter-1*meter;
 		//outerD=2*3*0.06*meter;
 		cx=(x1+x2)/2;
@@ -134,26 +134,78 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 		r2pipe=3*0.06*meter;
 		//		r2pipe=r1pipe;
 				AddDetector(new BeamPipe("beampipe",cx,cy,cz,l,r1pipe,r2pipe,theta, top_l));//add Dipole
+
 		//add beam pipe inside 2nd dipole and quads 11,10
 		wallthickness=(1/8.)*25.4*meter/1000;//changed to 5/8" from 1/8" in mm
-		x1=0.197934*meter;//q11
-		x2=0.1998355*meter;//q10
-		z1=-92.8690025*meter;//q11
-		z2=-88.34579*meter;//q10
+		//		x1=0.197934*meter;//q11
+		//		x2=0.1998355*meter;//q10
+		//		z1=-92.8690025*meter+0.6*meter/2+5;//q11
+		//		z2=-88.34579*meter-0.6*meter/2-5;//q10
 		//outerD=2*0.06*meter;
-		cx=(x1+x2)/2;
+       		cx=0.197934*meter;//(x1+x2)/2;
 		cy=0;
-		cz=(z1+z2)/2;
-		l=(z2-z1);
-		theta=-(x2-x1)/(z2-z1);
-		r1pipe=0.06*meter-wallthickness;
+		cz=-90.6074145*meter;//(z1+z2)/2;
+		l=2.923301*meter+0.5*meter;//(z2-z1);
+		theta=-0.00332213905;//-(x2-x1)/(z2-z1);
+		r1pipe=0.05*meter-wallthickness;
 		//		r2pipe=r1pipe;
-		r2pipe=0.06*meter;
-		//		AddDetector(new BeamPipe("beampipe0",cx,cy,cz,l,r1pipe,r2pipe,theta, top_l));//add pipe
+		r2pipe=0.05*meter;
+			AddDetector(new BeamPipe("beampipeD22",cx,cy,cz,l,r1pipe,r2pipe,theta, top_l));//add pipe dor Dipole 22
 
+			//----//add pipe dor Dipole 21
+		wallthickness=(1/8.)*25.4*meter/1000;//changed to 5/8" from 1/8" in mm
+		//		x1=0.197934*meter;//q11
+		//		x2=0.1998355*meter;//q10
+		//		z1=-92.8690025*meter+0.6*meter/2+5;//q11
+		//		z2=-88.34579*meter-0.6*meter/2-5;//q10
+		//outerD=2*0.06*meter;
+		cx=0.151178*meter;//(x1+x2)/2;
+		cy=0;
+		cz=-95.1303785*meter;//(z1+z2)/2;
+		l=2.923301*meter+0.5*meter;//(z2-z1);
+		theta=-0.0173520834;//-(x2-x1)/(z2-z1);
+		r1pipe=0.05*meter-wallthickness;
+		//		r2pipe=r1pipe;
+		r2pipe=0.05*meter;
+		AddDetector(new BeamPipe("beampipeD21",cx,cy,cz,l,r1pipe,r2pipe,theta, top_l));//add pipe dor Dipole 21
+
+		//----add pipe for Q11
+		wallthickness=(1/8.)*25.4*meter/1000;//changed to 5/8" from 1/8" in mm
+		//		x1=0.197934*meter;//q11
+		//		x2=0.1998355*meter;//q10
+		//		z1=-92.8690025*meter+0.6*meter/2+5;//q11
+		//		z2=-88.34579*meter-0.6*meter/2-5;//q10
+		//outerD=2*0.06*meter;
+		cx=0.184809*meter;//(x1+x2)/2;
+		cy=0;
+		cz=-92.8690025*meter;//(z1+z2)/2;
+		l=0.6*meter+0.5*meter-5;//(z2-z1);
+		theta=-0.0103371112;//-(x2-x1)/(z2-z1);
+		r1pipe=0.05*meter-wallthickness;
+		//		r2pipe=r1pipe;
+		r2pipe=0.05*meter;
+		AddDetector(new BeamPipe("beampipeQ11",cx,cy,cz,l,r1pipe,r2pipe,theta, top_l));//add pipe for Q11
+
+		//pipe for Q10
+		wallthickness=(1/8.)*25.4*meter/1000;//changed to 5/8" from 1/8" in mm
+		//		x1=0.197934*meter;//q11
+		//		x2=0.1998355*meter;//q10
+		//		z1=-92.8690025*meter+0.6*meter/2+5;//q11
+		//		z2=-88.34579*meter-0.6*meter/2-5;//q10
+		//outerD=2*0.06*meter;
+		cx=0.1998355*meter;//(x1+x2)/2;
+		cy=0;
+		cz=-88.34579*meter-0.125*meter;//(z1+z2)/2;
+		l=0.6*meter+0.25*meter-5;//(z2-z1);
+		theta=0.0036928331;//-(x2-x1)/(z2-z1);
+		r1pipe=0.05*meter-wallthickness;
+		//		r2pipe=r1pipe;
+		r2pipe=0.05*meter;
+		AddDetector(new BeamPipe("beampipeQ10",cx,cy,cz,l,r1pipe,r2pipe,theta, top_l));//add pipe for Q10
 
 
 	//---------
+
 
 
 	//detectors
