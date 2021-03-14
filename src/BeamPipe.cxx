@@ -49,9 +49,10 @@ BeamPipe::BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4dou
 		G4LogicalVolume *vol_inner = new G4LogicalVolume(shape_inner, mat_inner, nam_inner);
 		vol_inner->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
+		//		G4double bfield=0;
 		//magnetic field inside the inner core G4UniformMagField *field =
 		//G4ElectroMagneticField *field  = new G4ElectroMagneticField(0, -0.272916*tesla, 0,0 ,0 ,0);
-		//		G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, bfield, 0));
+		//			G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, bfield, 0));
 		//(G4ThreeVector(0, -0.272916*tesla, 0));
 		//		G4FieldManager *fman =  new G4FieldManager();//G4TransportationManager::GetTransportationManager()->GetFieldManager();//new G4FieldManager();
 
@@ -68,10 +69,10 @@ BeamPipe::BeamPipe(G4String nam, G4double xpos,G4double ypos,G4double zpos,G4dou
 		//fman->SetChordFinder(fChordFinder);
 		//fman->GetChordFinder()->SetDeltaChord(1e-7*meter);
 
-		//		vol_inner->SetFieldManager(fman, true);
+		//	      	       vol_inner->SetFieldManager(fman, true);
 
 		//put the inner core to the top volume
-		new G4PVPlacement(yRot, G4ThreeVector(xpos,ypos, zpos), vol_inner, nam_inner, top, false, 0);
+		//	new G4PVPlacement(yRot, G4ThreeVector(xpos,ypos, zpos), vol_inner, nam_inner, top, false, 0);
 
 		//cylindrical outer shape
 		//		G4Tubs *shape_outer = new G4Tubs(fNam+"_outer", 0., dout*0.5, length/2-1e-4*meter, 0., 360.*deg);
